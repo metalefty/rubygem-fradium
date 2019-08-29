@@ -72,6 +72,13 @@ class Fradium
     set_expiration(username, Time.now)
   end
 
+  def unexpire_user(username)
+		raise UsernameEmptyError if username&.empty?
+		raise UserNotFoundError unless user_exists?(username)
+    st = @client.prepare(%{DELETE FROM radcheck where username=? and attribute='Expiration'})
+    r = st.execute(username)
+  end
+
   def is_expired?(username)
     expiration_date = query_expiration(username)&.fetch('value')
     return false if expiration_date.nil? || expiration_date.empty? # if expiration info not found, not expired yet

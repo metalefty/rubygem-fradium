@@ -23,13 +23,15 @@ def help
   print <<"EOD"
 usage:
   create <username>                   # create new user with password
-  show   <username>                   # show password for username
+  show <username>                     # show password for username
   showall                             # show all users
-  expire <username>                   # expire specified user right now
+  expire <username>                   # expire the user right now
+  unexpire <username>                 # unexpire the user
   setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
   modify <username>                   # generate new password for username
   dbconsole                           # enter database console
 EOD
+  exit
 end
 
 def show_user(username)
@@ -57,6 +59,14 @@ when 'showall'
 
 when 'expire'
   @f.expire_user(ARGV[1])
+
+when 'unexpire'
+  @f.unexpire_user(ARGV[1])
+
+when 'setexpire'
+  help if ARGV[2].nil? || ARGV[2].empty?
+  expiry_date = Time.parse(ARGV[2])
+  @f.set_expiration(ARGV[1], expiry_date)
 
 when 'modify' # change user password
   @f.modify_user(ARGV[1])
