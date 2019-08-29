@@ -20,8 +20,16 @@ SUBCOMMANDS = %{dbconsole}
 @f = Fradium.new(host: :localhost, username: :root, database: :new_radius)
 
 def help
-  puts "usage: work in progress"
-  p ARGV
+  print <<"EOD"
+usage:
+  create <username>                   # create new user with password
+  show   <username>                   # show password for username
+  showall                             # show all users
+  expire <username>                   # expire specified user right now
+  setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
+  modify <username>                   # generate new password for username
+  dbconsole                           # enter database console
+EOD
 end
 
 def show_user(username)
@@ -42,15 +50,18 @@ when 'dbconsole'
 when 'show'
   show_user(ARGV[1])
 
-when 'showall' 
+when 'showall'
   @f.all_users.each do |e|
     puts e
   end
+
+when 'expire'
+  @f.expire_user(ARGV[1])
 
 when 'modify' # change user password
   @f.modify_user(ARGV[1])
   show_user(ARGV[1])
 
-else
+else # unknown subcommand
   help
 end

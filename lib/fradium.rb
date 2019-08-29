@@ -68,6 +68,10 @@ class Fradium
     r = st.execute(password, id)
 	end
 
+  def expire_user(username)
+    set_expiration(username, Time.now)
+  end
+
   def is_expired?(username)
     expiration_date = query_expiration(username)&.fetch('value')
     return false if expiration_date.nil? || expiration_date.empty? # if expiration info not found, not expired yet
@@ -79,9 +83,9 @@ class Fradium
 
     value = ''
     if expiration_date.instance_of?(Time)
-      value = expiration_date.strftime("%d %b %Y %H:%M:%D")
+      value = expiration_date.strftime("%d %b %Y %H:%M:%S")
     else
-      value = Time.parse(expiration_date).strftime("%d %b %Y %H:%M:%D")
+      value = Time.parse(expiration_date).strftime("%d %b %Y %H:%M:%S")
     end
 
     if expiration_info.nil? # add new entry
