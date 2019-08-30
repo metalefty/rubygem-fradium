@@ -16,11 +16,7 @@ class Fradium
         disable username      # disable the user
 =end
 
-	def initialize(params={host: 'localhost', username: 'root', database: 'radius'})
-		@mysql_host ||= ENV['FRADIUM_MYSQL_HOST']
-		@mysql_database ||= ENV['FRADIUM_MYSQL_DATABASE']
-		@mysql_user ||=  ENV['FRADIUM_MYSQL_USER']
-		@mysql_pass ||=  ENV['FRADIUM_MYSQL_PASS']
+	def initialize(params)
 		@params = params
 		@client = Mysql2::Client.new(params)
 	end
@@ -105,12 +101,13 @@ class Fradium
   end
 
 	def dbconsole
-		Kernel.exec('mysql',
-								"--pager=less -SF",
-								"--user=#{@params[:username]}",
-								"--password=#{@params[:password]}",
-								"--host=#{@params[:host]}" ,
-								"#{@params[:database]}")
+    # I know this is not safe.
+    Kernel.exec({'MYSQL_PWD' => @params['password']},
+                'mysql',
+                "--pager=less -SF",
+                "--user=#{@params['username']}",
+                "--host=#{@params['host']}" ,
+                "#{@params['database']}")
 	end
 
 	def self.generate_random_password(length=10)
