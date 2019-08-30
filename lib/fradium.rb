@@ -1,5 +1,4 @@
 require "fradium/version"
-require 'mysql2'
 require 'securerandom'
 require 'sequel'
 require 'time'
