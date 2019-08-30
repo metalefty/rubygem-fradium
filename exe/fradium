@@ -116,5 +116,5 @@ when 'modify' # change user password
   show_user(ARGV[1])
 
 else # unknown subcommand
-  help
+  show_help
 end
