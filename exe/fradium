@@ -3,21 +3,6 @@
 require 'yaml'
 require_relative '../lib/fradium'
 
-=begin
-        check username        # check if username exists
-        create username       # create new user and password
-        show username         # show password for username
-        showall               # show all users
-        showactive            # show active (enabled) users
-        showinactive          # show inactive (disabled) users
-        modify username       # generate new password for username
-        modifyguest username  # generate new guest password for username
-        disable username      # disable the user
-        dbconsole             # enter database console
-=end
-
-
-
 def config_file_not_found
   print <<"EOD"
 #{$0}: config file not found

@@ -9,13 +9,6 @@ class Fradium
   class UserNotFoundError < StandardError; end
   class UsernameEmptyError < StandardError; end
   class CorruptedUserDatabaseError < StandardError; end
-=begin
-        showactive            # show active (enabled) users
-        showinactive          # show inactive (disabled) users
-        modify username       # generate new password for username
-        modifyguest username  # generate new guest password for username
-        disable username      # disable the user
-=end
 
   def initialize(params)
     @params = params
@@ -44,7 +37,6 @@ class Fradium
   def find_user(username)
     raise UsernameEmptyError if username&.empty?
     reult = @sequel[:radcheck].where(username: username).where{attribute.like '%-Password'}
-
   end
 
   def modify_user(username)
