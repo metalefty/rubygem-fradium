@@ -25,7 +25,7 @@ class Fradium
   end
 
   def all_users
-    @sequel[:radcheck].where{attribute.like '%-Password'}.map{|e| e[:username]}
+    @sequel[:radcheck].where{attribute.like '%-Password'}
   end
 
   def create_user(username)
@@ -54,13 +54,11 @@ class Fradium
     target.update(value: password, attribute: 'Cleartext-Password')
   end
 
-  def find_expired_username
-    find_expired_user.map{|e| e[:username]}
-  end
-
-  def find_expired_user
+  def expired_users
     now = Time.now
-    @sequel[:radcheck].where(attribute: 'Expiration').to_a.select{|e| now > Time.parse(e[:value])}
+    # a little bit redundant but for consistency
+    id = @sequel[:radcheck].where(attribute: 'Expiration').collect{|e| e[:id] if Time.now > Time.parse(e[:value])}
+    @sequel[:radcheck].where(id: id)
   end
 
   def expire_user(username)

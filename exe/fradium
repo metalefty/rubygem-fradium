@@ -84,12 +84,12 @@ when 'show'
   show_user(ARGV[1])
 
 when 'showall'
-  @f.all_users.each do |e|
+  @f.all_users.map{|e| e[:username]}.each do |e|
     puts e
   end
 
 when 'showexpired'
-  @f.find_expired_username.each do |e|
+  @f.expired_users.map{|e| e[:username]}.each do |e|
     puts e
   end
 
