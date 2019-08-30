@@ -1,6 +1,7 @@
 require "fradium/version"
 require 'mysql2'
 require 'securerandom'
+require 'sequel'
 require 'time'
 
 class Fradium
@@ -18,19 +19,15 @@ class Fradium
 
   def initialize(params)
     @params = params
-    @client = Mysql2::Client.new(params)
+    @sequel = Sequel.connect({adapter: :mysql2}.merge(@params))
   end
 
   def user_exists?(username)
-    st = @client.prepare(%{SELECT username FROM radcheck WHERE username=? and attribute like '%-Password'})
-    r = st.execute(username)
-    r.count > 0
+    find_user(username).count > 0
   end
 
   def all_users
-    st = @client.prepare(%{SELECT username from radcheck WHERE attribute like '%-Password'})
-    r = st.execute
-    r.map{|h| h['username']}
+    @sequel[:radcheck].where{attribute.like '%-Password'}.map{|e| e[:username]}
   end
 
   def create_user(username)
@@ -38,16 +35,16 @@ class Fradium
     raise UserAlreadyExistsError if user_exists?(username)
     password = Fradium.generate_random_password
 
-    st = @client.prepare(%{INSERT INTO radcheck (username,attribute,op,value) VALUES(?,?,?,?)})
-    r = st.execute(username, 'Cleartext-Password', ':=', password)
+    @sequel[:radcheck].insert(username: username,
+                              attribute: 'Cleartext-Password',
+                              op: ':=',
+                              value: password)
   end
 
   def find_user(username)
     raise UsernameEmptyError if username&.empty?
-    raise UserNotFoundError unless user_exists?(username)
+    reult = @sequel[:radcheck].where(username: username).where{attribute.like '%-Password'}
 
-    st = @client.prepare(%{SELECT * FROM radcheck WHERE attribute like '%-Password' and username=?})
-    r = st.execute(username)
   end
 
   def modify_user(username)
@@ -55,26 +52,18 @@ class Fradium
     raise UserNotFoundError unless user_exists?(username)
     password = Fradium.generate_random_password
 
-    st = @client.prepare(%{SELECT id FROM radcheck WHERE username=? and attribute like '%-Password'})
-    r = st.execute(username)
-    raise CorruptedUserDatabaseError if r.count > 1
-    id = r.first['id']
-
-    st  = @client.prepare(%{UPDATE radcheck SET value=?,attribute='Cleartext-Password' WHERE id=?})
-    r = st.execute(password, id)
+    target = find_user(username)
+    raise CorruptedUserDatabaseError if target.count > 1
+    target.update(value: password, attribute: 'Cleartext-Password')
   end
 
   def find_expired_username
+    find_expired_user.map{|e| e[:username]}
+  end
+
+  def find_expired_user
     now = Time.now
-    st = @client.prepare(%{SELECT * from radcheck WHERE attribute='Expiration'})
-    r = st.execute
-
-    expired_users = []
-    r.each do |e|
-      expired_users << e['username'] if Time.now > Time.parse(e['value'])
-    end
-
-    expired_users
+    @sequel[:radcheck].where(attribute: 'Expiration').to_a.select{|e| now > Time.parse(e[:value])}
   end
 
   def expire_user(username)
@@ -84,8 +73,7 @@ class Fradium
   def unexpire_user(username)
     raise UsernameEmptyError if username&.empty?
     raise UserNotFoundError unless user_exists?(username)
-    st = @client.prepare(%{DELETE FROM radcheck where username=? and attribute='Expiration'})
-    r = st.execute(username)
+    @sequel[:radcheck].where(username: username, attribute: 'Expiration').delete
   end
 
   def is_expired?(username)
@@ -105,11 +93,12 @@ class Fradium
     end
 
     if expiration_info.nil? # add new entry
-      st = @client.prepare(%{INSERT INTO radcheck (username,attribute,op,value) VALUES (?,?,?,?)})
-      r = st.execute(username, 'Expiration', ':=', value)
+      @sequel[:radcheck].insert(username: username,
+                                attribute: 'Expiration',
+                                op: ':=',
+                                value: value)
     else # update existing entry
-      st = @client.prepare(%{UPDATE radcheck SET value=? where id=?})
-      r = st.execute(value, expiration_info.fetch('id'))
+      expiration_info.update(value: value)
     end
   end
 
@@ -137,12 +126,12 @@ class Fradium
     raise UsernameEmptyError if username&.empty?
     raise UserNotFoundError unless user_exists?(username)
 
-    st = @client.prepare(%{SELECT * from  radcheck WHERE username=? and attribute='Expiration'})
-    r = st.execute(username)
-    raise CorruptedUserDatabaseError if r.count > 1
-    return nil if r.count == 0 # if expiration information not found
-    return nil if r&.first['value']&.empty?
+    r = @sequel[:radcheck].where(username: username, attribute: 'Expiration')
 
-    r.first
+    raise CorruptedUserDatabaseError if r.count > 1
+    return nil if r.count == 0 # if no expiration info found
+    return nil if r&.first[:value]&.empty?
+
+    r
   end
 end
