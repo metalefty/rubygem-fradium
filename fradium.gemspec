@@ -35,5 +35,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry', '~> 0.12'
 
   spec.add_dependency 'mysql2', '~> 0.5.2'
-  spec.add_dependency 'sequel', '~> 5.23.0'
+  spec.add_dependency 'sequel', '~> 5.23'
 end
