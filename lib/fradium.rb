@@ -64,6 +64,19 @@ class Fradium
     r = st.execute(password, id)
   end
 
+  def find_expired_username
+    now = Time.now
+    st = @client.prepare(%{SELECT * from radcheck WHERE attribute='Expiration'})
+    r = st.execute
+
+    expired_users = []
+    r.each do |e|
+      expired_users << e['username'] if Time.now > Time.parse(e['value'])
+    end
+
+    expired_users
+  end
+
   def expire_user(username)
     set_expiration(username, Time.now)
   end

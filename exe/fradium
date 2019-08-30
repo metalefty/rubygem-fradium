@@ -53,6 +53,7 @@ subcommands as follows:
   create <username>                   # create new user with password
   show <username>                     # show password for username
   showall                             # show all users
+  showexpired                         # show expired users
   expire <username>                   # expire the user right now
   unexpire <username>                 # unexpire the user
   setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
@@ -97,6 +98,11 @@ when 'show'
 
 when 'showall'
   @f.all_users.each do |e|
+    puts e
+  end
+
+when 'showexpired'
+  @f.find_expired_username.each do |e|
     puts e
   end
 
