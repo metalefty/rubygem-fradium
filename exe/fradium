@@ -65,7 +65,7 @@ end
 
 def show_user(username)
   user = @f.find_user(username).first
-  printf "%s  %s\n", user['username'], user['value']
+  printf "%s  %s\n", user[:username], user[:value]
 end
 
 # main routine starts here:
