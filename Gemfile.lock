@@ -3,7 +3,8 @@ PATH
   specs:
     fradium (0.1.0)
       mysql2 (~> 0.5.2)
-      sequel (~> 5.23.0)
+      sequel (~> 5.23)
+      sqlite3 (~> 1.4.1)
 
 GEM
   remote: https://rubygems.org/
@@ -30,6 +31,7 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
     sequel (5.23.0)
+    sqlite3 (1.4.1)
 
 PLATFORMS
   ruby

@@ -13,12 +13,14 @@ An Example of .fradium.yaml as follows.
 -------------------------------------------------------------------------------
 
 default: # default profile
+  adapter: mysql2
   host: localhost
   username: root
   password: mysqlpassword
   database: radius
 
 staging: # if you want to define another profile
+  adapter: mysql2
   host: localhost
   username: root
   password: mysqlpassword

@@ -12,7 +12,13 @@ class Fradium
 
   def initialize(params)
     @params = params
-    @sequel = Sequel.connect({adapter: :mysql2}.merge(@params))
+
+    case @params['adapter']
+    when 'sqlite'
+      @sequel = Sequel.connect("sqlite://#{@params['file']}")
+    else
+      @sequel = Sequel.connect(@params)
+    end
   end
 
   def user_exists?(username)
