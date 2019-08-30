@@ -4,9 +4,9 @@ require 'securerandom'
 require 'time'
 
 class Fradium
-	class UserAlreadyExistsError < StandardError; end
-	class UserNotFoundError < StandardError; end
-	class UsernameEmptyError < StandardError; end
+  class UserAlreadyExistsError < StandardError; end
+  class UserNotFoundError < StandardError; end
+  class UsernameEmptyError < StandardError; end
   class CorruptedUserDatabaseError < StandardError; end
 =begin
         showactive            # show active (enabled) users
@@ -16,61 +16,61 @@ class Fradium
         disable username      # disable the user
 =end
 
-	def initialize(params)
-		@params = params
-		@client = Mysql2::Client.new(params)
-	end
+  def initialize(params)
+    @params = params
+    @client = Mysql2::Client.new(params)
+  end
 
   def user_exists?(username)
-		st = @client.prepare(%{SELECT username FROM radcheck WHERE username=? and attribute like '%-Password'})
-		r = st.execute(username)
-		r.count > 0
-	end
+    st = @client.prepare(%{SELECT username FROM radcheck WHERE username=? and attribute like '%-Password'})
+    r = st.execute(username)
+    r.count > 0
+  end
 
-	def all_users
-		st = @client.prepare(%{SELECT username from radcheck WHERE attribute like '%-Password'})
-		r = st.execute
-		r.map{|h| h['username']}
-	end
+  def all_users
+    st = @client.prepare(%{SELECT username from radcheck WHERE attribute like '%-Password'})
+    r = st.execute
+    r.map{|h| h['username']}
+  end
 
-	def create_user(username)
-		raise UsernameEmptyError if username&.empty?
-		raise UserAlreadyExistsError if user_exists?(username)
-		password = Fradium.generate_random_password
+  def create_user(username)
+    raise UsernameEmptyError if username&.empty?
+    raise UserAlreadyExistsError if user_exists?(username)
+    password = Fradium.generate_random_password
 
-		st = @client.prepare(%{INSERT INTO radcheck (username,attribute,op,value) VALUES(?,?,?,?)})
-		r = st.execute(username, 'Cleartext-Password', ':=', password)
-	end
+    st = @client.prepare(%{INSERT INTO radcheck (username,attribute,op,value) VALUES(?,?,?,?)})
+    r = st.execute(username, 'Cleartext-Password', ':=', password)
+  end
 
   def find_user(username)
-		raise UsernameEmptyError if username&.empty?
-		raise UserNotFoundError unless user_exists?(username)
+    raise UsernameEmptyError if username&.empty?
+    raise UserNotFoundError unless user_exists?(username)
 
     st = @client.prepare(%{SELECT * FROM radcheck WHERE attribute like '%-Password' and username=?})
     r = st.execute(username)
   end
 
-	def modify_user(username)
-		raise UsernameEmptyError if username&.empty?
-		raise UserNotFoundError unless user_exists?(username)
-		password = Fradium.generate_random_password
+  def modify_user(username)
+    raise UsernameEmptyError if username&.empty?
+    raise UserNotFoundError unless user_exists?(username)
+    password = Fradium.generate_random_password
 
-		st = @client.prepare(%{SELECT id FROM radcheck WHERE username=? and attribute like '%-Password'})
-		r = st.execute(username)
+    st = @client.prepare(%{SELECT id FROM radcheck WHERE username=? and attribute like '%-Password'})
+    r = st.execute(username)
     raise CorruptedUserDatabaseError if r.count > 1
     id = r.first['id']
 
     st  = @client.prepare(%{UPDATE radcheck SET value=?,attribute='Cleartext-Password' WHERE id=?})
     r = st.execute(password, id)
-	end
+  end
 
   def expire_user(username)
     set_expiration(username, Time.now)
   end
 
   def unexpire_user(username)
-		raise UsernameEmptyError if username&.empty?
-		raise UserNotFoundError unless user_exists?(username)
+    raise UsernameEmptyError if username&.empty?
+    raise UserNotFoundError unless user_exists?(username)
     st = @client.prepare(%{DELETE FROM radcheck where username=? and attribute='Expiration'})
     r = st.execute(username)
   end
@@ -100,7 +100,7 @@ class Fradium
     end
   end
 
-	def dbconsole
+  def dbconsole
     # I know this is not safe.
     Kernel.exec({'MYSQL_PWD' => @params['password']},
                 'mysql',
@@ -108,21 +108,21 @@ class Fradium
                 "--user=#{@params['username']}",
                 "--host=#{@params['host']}" ,
                 "#{@params['database']}")
-	end
+  end
 
-	def self.generate_random_password(length=10)
-		r = SecureRandom.urlsafe_base64.delete('-_')
-		while r.length < length
-			r << SecureRandom.urlsafe_base64.delete('-_')
-		end
-		r[0..length-1]
-	end
+  def self.generate_random_password(length=10)
+    r = SecureRandom.urlsafe_base64.delete('-_')
+    while r.length < length
+      r << SecureRandom.urlsafe_base64.delete('-_')
+    end
+    r[0..length-1]
+  end
 
   #private
 
   def query_expiration(username)
-		raise UsernameEmptyError if username&.empty?
-		raise UserNotFoundError unless user_exists?(username)
+    raise UsernameEmptyError if username&.empty?
+    raise UserNotFoundError unless user_exists?(username)
 
     st = @client.prepare(%{SELECT * from  radcheck WHERE username=? and attribute='Expiration'})
     r = st.execute(username)
