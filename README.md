@@ -8,6 +8,8 @@ Fradium comes from **F**ree**RADIU**S **U**ser **M**anager.
 
 ## Usage
 
+### Configuration
+
 First of all, create a confiuration file called `.fradium.yaml` in your home directory and specify information needed to your RADIUS database. You can define multiple configuration sets called *profile*.
 
 Supported databases are MySQL and MariaDB via `mysql2` adapter so far. It should be work with SQLite or PostgreSQL but still experimental.
@@ -26,10 +28,30 @@ staging:
   username: root
   password:
   database: radius_staging
-
 ```
 
 Profiles can be choose by `--profile` option. Specify like `--profile=targetprofile`. If not specified, profile named `default` will be refered by default.
+
+### Further usage
+
+It would be easy to use. Running `fradium` without any options will show the usage.
+
+```
+usage:
+  exe/fradium [--profile=profile] subcommand ...
+
+subcommands as follows:
+  create <username>                   # create new user with password
+  show <username>                     # show password for username
+  showall                             # show all users
+  showvalid                           # show valid(not expired) users
+  showexpired                         # show expired users
+  expire <username>                   # expire the user right now
+  unexpire <username>                 # unexpire the user
+  setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
+  modify <username>                   # generate new password for username
+  dbconsole                           # enter database console
+```
 
 ## Development
 
