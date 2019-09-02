@@ -1,28 +1,35 @@
-# Fradium
+# Fradium - FreeRADIUS User Manager
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fradium`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Fradium comes from **F**ree**RADIU**S **U**ser **M**anager.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'fradium'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install fradium
 
 ## Usage
 
-TODO: Write usage instructions here
+First of all, create a confiuration file called `.fradium.yaml` in your home directory and specify information needed to your RADIUS database. You can define multiple configuration sets called *profile*.
+
+Supported databases are MySQL and MariaDB via `mysql2` adapter so far. It should be work with SQLite or PostgreSQL but still experimental.
+
+```
+default: # default profile
+  adapter: mysql2
+  host: radius.mysql.example.com
+  username: root
+  password:
+  database: radius
+
+staging:
+  adapter: mysql2
+  host: radius.mysql.example.com
+  username: root
+  password:
+  database: radius_staging
+
+```
+
+Profiles can be choose by `--profile` option. Specify like `--profile=targetprofile`. If not specified, profile named `default` will be refered by default.
 
 ## Development
 
@@ -32,4 +39,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fradium.
+Bug reports and pull requests are welcome on GitHub at https://github.com/metalefty/fradium.
