@@ -9,6 +9,10 @@
 
 # rspec failure tracking
 .rspec_status
+
+# editor's temporary files
 *.sw?
 *~
-.gem
+
+# built gem
+*.gem
