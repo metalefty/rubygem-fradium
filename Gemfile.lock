@@ -2,9 +2,9 @@ PATH
   remote: .
   specs:
     fradium (0.1.0)
-      mysql2 (~> 0.5.2)
+      mysql2 (~> 0.5)
       sequel (~> 5.23)
-      sqlite3 (~> 1.4.1)
+      sqlite3 (~> 1.4)
 
 GEM
   remote: https://rubygems.org/
