@@ -1,6 +1,9 @@
 # Fradium - FreeRADIUS User Manager
 
-Fradium comes from **F**ree**RADIU**S **U**ser **M**anager.
+Fradium comes from **F**ree**RADIU**S **U**ser **M**anager. Quick and easy tool to manage user database of FreeRADIUS.
+
+## License
+This software is licensed under the MIT license.
 
 ## Installation
 
