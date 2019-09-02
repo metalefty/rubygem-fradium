@@ -40,6 +40,7 @@ subcommands as follows:
   create <username>                   # create new user with password
   show <username>                     # show password for username
   showall                             # show all users
+  showvalid                           # show valid(not expired) users
   showexpired                         # show expired users
   expire <username>                   # expire the user right now
   unexpire <username>                 # unexpire the user
@@ -85,6 +86,11 @@ when 'show'
 
 when 'showall'
   @f.all_users.map{|e| e[:username]}.each do |e|
+    puts e
+  end
+
+when 'showvalid'
+  (@f.all_users.map{|e| e[:username]} - @f.expired_users.map{|e| e[:username]}).each do |e|
     puts e
   end
 
