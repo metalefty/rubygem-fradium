@@ -5,7 +5,7 @@ require_relative '../lib/fradium'
 
 def config_file_not_found
   print <<"EOD"
-#{$0}: config file not found
+#{File.basename $0}: config file not found
 
 Put ~/.fradium.yaml to define MySQL database to connect.
 An Example of .fradium.yaml as follows.
@@ -34,7 +34,7 @@ end
 def show_help
   print <<"EOD"
 usage:
-  #{$0} [--profile=profile] subcommand ...
+  #{File.basename $0} [--profile=profile] subcommand ...
 
 subcommands as follows:
   create <username>                   # create new user with password
