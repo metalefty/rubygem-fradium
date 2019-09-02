@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fradium (0.1.1)
+    fradium (0.1.2)
       mysql2 (~> 0.5)
       sequel (~> 5.23)
       sqlite3 (~> 1.4)
@@ -30,7 +30,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
-    sequel (5.23.0)
+    sequel (5.24.0)
     sqlite3 (1.4.1)
 
 PLATFORMS
