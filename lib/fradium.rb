@@ -54,6 +54,10 @@ class Fradium
     target.update(value: password, attribute: 'Cleartext-Password')
   end
 
+  def expiry
+    @sequel[:radcheck].where(attribute: 'Expiration')
+  end
+
   def expired_users
     now = Time.now
     # a little bit redundant but for consistency

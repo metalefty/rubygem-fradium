@@ -42,6 +42,7 @@ subcommands as follows:
   showall                             # show all users
   showvalid                           # show valid(not expired) users
   showexpired                         # show expired users
+  showexpiry                          # show expiry inforrmation
   expire <username>                   # expire the user right now
   unexpire <username>                 # unexpire the user
   setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
@@ -97,6 +98,18 @@ when 'showvalid'
 when 'showexpired'
   @f.expired_users.map{|e| e[:username]}.each do |e|
     puts e
+  end
+
+when 'showexpiry'
+  @f.expiry.each do |e|
+    now = Time.now
+    expiry = Time.parse(e[:value])
+
+    print e[:username]
+    print "\t"
+    print expiry.iso8601
+    print "\tEXPIRED" if now > expiry
+    print "\n"
   end
 
 when 'expire'

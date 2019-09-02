@@ -41,7 +41,7 @@ It would be easy to use. Running `fradium` without any options will show the usa
 
 ```
 usage:
-  exe/fradium [--profile=profile] subcommand ...
+  fradium [--profile=profile] subcommand ...
 
 subcommands as follows:
   create <username>                   # create new user with password
@@ -49,6 +49,7 @@ subcommands as follows:
   showall                             # show all users
   showvalid                           # show valid(not expired) users
   showexpired                         # show expired users
+  showexpiry                          # show expiry inforrmation
   expire <username>                   # expire the user right now
   unexpire <username>                 # unexpire the user
   setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
