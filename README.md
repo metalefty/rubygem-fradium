@@ -35,7 +35,7 @@ staging:
 sqlite: "sqlite:///path/to/sqlite_database.sqlite"
 ```
 
-Profiles can be choose by `--profile` option. Specify like `--profile=targetprofile`. If not specified, profile named `default` will be refered by default. Parameters defined in this config file are passed to [Sequel#connect](https://www.rubydoc.info/github/evanfarrar/opensprints/Sequel.connect) method as-is.
+Profiles can be chosen by `--profile` option. Specify like `--profile=targetprofile`. If not specified, profile named `default` will be refered by default. Parameters defined in this config file are passed to [Sequel#connect](https://www.rubydoc.info/github/evanfarrar/opensprints/Sequel.connect) method as-is.
 
 ### Further usage
 
