@@ -105,6 +105,12 @@ class Fradium
                   "--user=#{@params['username']}",
                   "--host=#{@params['host']}" ,
                   "#{@params['database']}")
+    when :postgres
+      Kernel.exec({'PGPASSWORD' => @params['password']},
+                  'psql',
+                  "--username=#{@params['username']}",
+                  "--dbname=#{@params['database']}",
+                  "--host=#{@params['host']}")
     when :sqlite
       Kernel.exec('sqlite3', @params)
     end
