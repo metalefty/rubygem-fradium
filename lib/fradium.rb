@@ -11,13 +11,7 @@ class Fradium
 
   def initialize(params)
     @params = params
-
-    case @params['adapter']
-    when 'sqlite'
-      @sequel = Sequel.connect("sqlite://#{@params['file']}")
-    else
-      @sequel = Sequel.connect(@params)
-    end
+    @sequel = Sequel.connect(@params)
   end
 
   def user_exists?(username)
@@ -98,13 +92,18 @@ class Fradium
   end
 
   def dbconsole
-    # I know this is not safe.
-    Kernel.exec({'MYSQL_PWD' => @params['password']},
-                'mysql',
-                "--pager=less -SF",
-                "--user=#{@params['username']}",
-                "--host=#{@params['host']}" ,
-                "#{@params['database']}")
+    case @sequel.adapter_scheme
+    when :mysql2
+      # I know this is not safe.
+      Kernel.exec({'MYSQL_PWD' => @params['password']},
+                  'mysql',
+                  "--pager=less -SF",
+                  "--user=#{@params['username']}",
+                  "--host=#{@params['host']}" ,
+                  "#{@params['database']}")
+    when :sqlite
+      Kernel.exec('sqlite3', @params)
+    end
   end
 
   def self.generate_random_password(length=10)

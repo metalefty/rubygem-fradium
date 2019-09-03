@@ -15,7 +15,7 @@ This software is licensed under the MIT license.
 
 First of all, create a confiuration file called `.fradium.yaml` in your home directory and specify information needed to your RADIUS database. You can define multiple configuration sets called *profile*.
 
-Supported databases are MySQL and MariaDB via `mysql2` adapter so far. It should be work with SQLite or PostgreSQL but still experimental.
+Supported databases are MySQL and MariaDB via `mysql2` adapter so far. It should be work with SQLite 3 or PostgreSQL but still experimental.
 
 ```
 default: # default profile
@@ -31,9 +31,11 @@ staging:
   username: root
   password:
   database: radius_staging
+
+sqlite: "sqlite:///path/to/sqlite_database.sqlite"
 ```
 
-Profiles can be choose by `--profile` option. Specify like `--profile=targetprofile`. If not specified, profile named `default` will be refered by default.
+Profiles can be choose by `--profile` option. Specify like `--profile=targetprofile`. If not specified, profile named `default` will be refered by default. Parameters defined in this config file are passed to [Sequel#connect](https://www.rubydoc.info/github/evanfarrar/opensprints/Sequel.connect) method as-is.
 
 ### Further usage
 
