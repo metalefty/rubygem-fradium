@@ -37,7 +37,7 @@ usage:
   #{File.basename $0} [--profile=profile] subcommand ...
 
 subcommands as follows:
-  create <username>                   # create new user with password
+  create <username> [expiry date]     # create new user with password
   show <username>                     # show password for username
   showall                             # show all users
   showvalid                           # show valid(not expired) users
@@ -76,7 +76,18 @@ case ARGV[0]
 
 when 'create'
   show_help if ARGV[1]&.empty?
+  expiry_date = nil
+  if ARGV.count >= 2 # when expiry given
+    begin
+      expiry_date = Time.parse(ARGV[2])
+    rescue
+      $stderr.puts "ERROR: could not parse expiry date"
+      exit
+    end
+  else
+  end
   @f.create_user(ARGV[1])
+  @f.set_expiration(ARGV[1], expiry_date) if expiry_date
   show_user(ARGV[1])
 
 when 'dbconsole'
