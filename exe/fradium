@@ -48,8 +48,13 @@ subcommands as follows:
   setexpire <username> <expiry date>  # set expiry date (date must be parseable by Time#parse)
   modify <username>                   # generate new password for username
   dbconsole                           # enter database console
+  version                             # show version
 EOD
   exit
+end
+
+def show_version
+  puts "fradium v#{Fradium::VERSION}"
 end
 
 def show_user(username)
@@ -137,6 +142,9 @@ when 'setexpire'
 when 'modify' # change user password
   @f.modify_user(ARGV[1])
   show_user(ARGV[1])
+
+when 'version'
+  show_version
 
 else # unknown subcommand
   show_help
