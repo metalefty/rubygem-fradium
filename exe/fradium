@@ -82,7 +82,7 @@ case ARGV[0]
 when 'create'
   show_help if ARGV[1]&.empty?
   expiry_date = nil
-  if ARGV.count >= 2 # when expiry given
+  if ARGV.count > 2 # when expiry given
     begin
       expiry_date = Time.parse(ARGV[2])
     rescue
