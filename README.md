@@ -11,7 +11,9 @@ This software is licensed under the MIT license.
 
 You need to install corresponding database adapter gems what you want to connect.
 
-   $ gem install <mysql2|pq|sqlite>
+    $ gem install mysql2
+    $ gem install pq
+    $ gem install sqlite
 
 ## Usage
 
